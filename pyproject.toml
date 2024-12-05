@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "andreani-qr"
+version = "0.1.0"
+description = ""
+authors = ["Teo Sibileau <teo.sibileau@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "--strict-markers"
+testpaths = [
+    "tests"
+]
+
+[tool.ruff]
+line-length = 100
+lint.select = ["ALL"]
+lint.ignore = []
+target-version = "py312"
+fix = true
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["E501", "F401"]

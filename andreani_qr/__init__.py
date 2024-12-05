@@ -1,0 +1,1 @@
+"""Andreani QR encoder."""
