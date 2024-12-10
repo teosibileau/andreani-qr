@@ -63,3 +63,8 @@ htmlcov/
 # Pre-commit specific
 .pre-commit-config.yaml~
 .pre-commit-hooks.yaml~
+
+*.jpg
+*.jpeg
+*.png
+.DS_Store
