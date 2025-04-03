@@ -21,7 +21,14 @@ def cli() -> None:
     type=click.Path(),
     help="Output dir for the generated QR code (default: .).",
 )
-def encode(code: str, output: str) -> None:
+@click.option(
+    "--name",
+    "-n",
+    default="",
+    type=str,
+    help="Name of the QR code (default: empty).",
+)
+def encode(code: str, output: str, name: str) -> None:
     """Encode provided TEXT into a QR and save it as an image file."""
     logger.info("Processing %s", code)
     logger.info(
@@ -45,7 +52,8 @@ def encode(code: str, output: str) -> None:
     logger.info("Generating QR code with fill: %s and back:%s", FILL_COLOR, BACK_COLOR)
     img = qr.make_image(fill_color=FILL_COLOR, back_color=BACK_COLOR)
 
-    output_file = f"{output}/{code}.png"
+    filename = name if name else code
+    output_file = f"{output}/{filename}.png"
     logger.info("Saving QR code to %s", output_file)
     img.save(output_file)
     logger.info("QR code generated and saved to %s", output_file)
