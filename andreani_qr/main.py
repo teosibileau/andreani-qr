@@ -2,9 +2,18 @@
 
 import click
 import qrcode
-from config import BACK_COLOR, BORDER_SIZE, BOX_SIZE, ERROR_CORRECTION, FILL_COLOR, VERSION, logger
 from PIL import Image
 from pyzbar.pyzbar import decode
+
+from andreani_qr.config import (
+    BACK_COLOR,
+    BORDER_SIZE,
+    BOX_SIZE,
+    ERROR_CORRECTION,
+    FILL_COLOR,
+    VERSION,
+    logger,
+)
 
 
 @click.group
