@@ -23,9 +23,6 @@ pip-delete-this-directory.txt
 env/
 venv/
 
-# Poetry specific
-poetry.lock
-
 # pytest
 .cache/
 
