@@ -4,6 +4,10 @@ version = "0.1.0"
 description = ""
 authors = ["Teo Sibileau <teo.sibileau@gmail.com>"]
 readme = "README.md"
+packages = [{ include = "andreani_qr" }]
+
+[tool.poetry.scripts]
+andreani-qr = "andreani_qr.main:cli"
 
 [tool.poetry.dependencies]
 python = "^3.12"
