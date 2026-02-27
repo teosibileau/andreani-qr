@@ -2,15 +2,28 @@
 
 ## Setup
 
+### Install
+
+Install using pipx directly from the git repository:
+
+```bash
+pipx install git+https://github.com/teosibileau/andreani-qr.git
 ```
+
+### Development
+
+For local development, install dependencies with:
+
+```bash
+pipx install poetry
 poetry install
 ```
 
 ## Usage
 
 ```
-poetry run python andreani_qr/main.py
-Usage: main.py [OPTIONS] COMMAND [ARGS]...
+andreani-qr --help
+Usage: andreani-qr [OPTIONS] COMMAND [ARGS]...
 
   Andreani QR tools.
 
@@ -18,27 +31,26 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  encode  Encodes the provided TEXT into a QR code and saves it as an...
-  read    Reads the QR code from the provided image file.
+  encode  Encode provided TEXT into a QR and save it as an image file.
+  read    Read QR code from the provided image file.
 ```
 
 ### Encode code
 
 ```
-poetry run python andreani_qr/main.py encode 360002431028980
-2024-12-10 19:02:14 Teofilos-Air.localdomain andreani_qr[67683] INFO Init
-2024-12-10 19:02:14 Teofilos-Air.localdomain andreani_qr[67683] INFO Processing 360002431028980
-2024-12-10 19:02:14 Teofilos-Air.localdomain andreani_qr[67683] INFO Instantiating QR code with version:1 error_correction:1 box_size:21 border:4
-2024-12-10 19:02:14 Teofilos-Air.localdomain andreani_qr[67683] INFO Adding data to QR
-2024-12-10 19:02:14 Teofilos-Air.localdomain andreani_qr[67683] INFO Generating QR code with fill: black and back:white
-2024-12-10 19:02:14 Teofilos-Air.localdomain andreani_qr[67683] INFO Saving QR code to ./360002431028980.png
+andreani-qr encode 360002431028980
 2024-12-10 19:02:14 Teofilos-Air.localdomain andreani_qr[67683] INFO QR code generated and saved to ./360002431028980.png
+```
+
+You can also specify a custom filename with `-n` or `--name`:
+
+```
+andreani-qr encode 360002431028980 -n my-custom-name
 ```
 
 ### Read code from QR (debug)
 
 ```
-poetry run python andreani_qr/main.py read ~/Downloads/code.jpeg
-2024-12-08 11:00:50 Teofilos-Air.home andreani_qr[6948] INFO Init
+andreani-qr read ~/Downloads/code.jpeg
 2024-12-08 11:00:50 Teofilos-Air.home andreani_qr[6948] INFO Type: QRCODE, Data: 360002425903320
 ```
