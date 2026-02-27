@@ -2,6 +2,13 @@
 
 ## Setup
 
+### Prerequisites
+
+Before installing, you need the zbar library:
+
+- **Ubuntu/Debian**: `sudo apt-get install libzbar-dev`
+- **macOS**: `brew install zbar`
+
 ### Install
 
 Install using pipx directly from the git repository:
