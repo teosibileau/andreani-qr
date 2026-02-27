@@ -56,17 +56,21 @@ class TestEncode:
     ) -> None:
         """Verify QR code is created."""
         with (
-            patch("andreani_qr.main.qrcode") as mock_qrcode,
-            patch.object(mock_qrcode.QRCode.return_value, "make_image") as mock_make_image,
+            patch("andreani_qr.main.QR") as mock_qr_class,
             patch("andreani_qr.main.logger", MagicMock()),
         ):
+            mock_qr = MagicMock()
+            mock_qr_class.return_value = mock_qr
             mock_img = MagicMock()
-            mock_make_image.return_value = mock_img
+            mock_qr.encode.return_value = mock_img
             with patch.object(mock_img, "save"):
-                result = runner.invoke(cli_module.cli, ["encode", "test_code", "-o", str(tmp_path)])
+                result = runner.invoke(
+                    cli_module.cli,
+                    ["encode", "360002827140850", "-o", str(tmp_path)],
+                )
 
             assert result.exit_code == 0
-            mock_qrcode.QRCode.assert_called_once()
+            mock_qr_class.assert_called_once_with("360002827140850")
 
     def test_encode_command_adds_data(
         self,
@@ -76,17 +80,21 @@ class TestEncode:
     ) -> None:
         """Verify data is added to QR code."""
         with (
-            patch("andreani_qr.main.qrcode") as mock_qrcode,
-            patch.object(mock_qrcode.QRCode.return_value, "make_image") as mock_make_image,
+            patch("andreani_qr.main.QR") as mock_qr_class,
             patch("andreani_qr.main.logger", MagicMock()),
         ):
+            mock_qr = MagicMock()
+            mock_qr_class.return_value = mock_qr
             mock_img = MagicMock()
-            mock_make_image.return_value = mock_img
+            mock_qr.encode.return_value = mock_img
             with patch.object(mock_img, "save"):
-                result = runner.invoke(cli_module.cli, ["encode", "test_code", "-o", str(tmp_path)])
+                result = runner.invoke(
+                    cli_module.cli,
+                    ["encode", "360002827140850", "-o", str(tmp_path)],
+                )
 
             assert result.exit_code == 0
-            mock_qrcode.QRCode.return_value.add_data.assert_called_once_with("test_code")
+            mock_qr.encode.assert_called_once()
 
     def test_encode_command_saves_image(
         self,
@@ -96,14 +104,18 @@ class TestEncode:
     ) -> None:
         """Verify image is saved."""
         with (
-            patch("andreani_qr.main.qrcode") as mock_qrcode,
-            patch.object(mock_qrcode.QRCode.return_value, "make_image") as mock_make_image,
+            patch("andreani_qr.main.QR") as mock_qr_class,
             patch("andreani_qr.main.logger", MagicMock()),
         ):
+            mock_qr = MagicMock()
+            mock_qr_class.return_value = mock_qr
             mock_img = MagicMock()
-            mock_make_image.return_value = mock_img
+            mock_qr.encode.return_value = mock_img
             with patch.object(mock_img, "save") as mock_save:
-                result = runner.invoke(cli_module.cli, ["encode", "test_code", "-o", str(tmp_path)])
+                result = runner.invoke(
+                    cli_module.cli,
+                    ["encode", "360002827140850", "-o", str(tmp_path)],
+                )
 
                 assert result.exit_code == 0
                 mock_save.assert_called_once()
@@ -135,16 +147,14 @@ class TestRead:
         test_file.write_text("fake image")
 
         with (
-            patch("andreani_qr.main.Image") as mock_image_class,
-            patch("andreani_qr.main.decode") as mock_decode,
+            patch("andreani_qr.main.QR") as mock_qr_class,
             patch("andreani_qr.main.logger", MagicMock()),
         ):
-            mock_image = MagicMock()
-            mock_image_class.open.return_value = mock_image
-            mock_decoded = [MagicMock(data=b"test_data", type="QR")]
-            mock_decode.return_value = mock_decoded
+            mock_qr = MagicMock()
+            mock_qr.code = "360002827140850"
+            mock_qr_class.from_file.return_value = mock_qr
 
             result = runner.invoke(cli_module.cli, ["read", str(test_file)])
 
             assert result.exit_code == 0
-            mock_decode.assert_called_once()
+            mock_qr_class.from_file.assert_called_once_with(str(test_file))

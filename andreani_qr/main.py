@@ -1,19 +1,9 @@
 """Command-line interface to generate Andreani QR codes."""
 
 import click
-import qrcode
-from PIL import Image
-from pyzbar.pyzbar import decode
 
-from andreani_qr.config import (
-    BACK_COLOR,
-    BORDER_SIZE,
-    BOX_SIZE,
-    ERROR_CORRECTION,
-    FILL_COLOR,
-    VERSION,
-    logger,
-)
+from andreani_qr.config import logger
+from andreani_qr.qr import QR, InvalidCodeError
 
 
 @click.group
@@ -39,31 +29,15 @@ def cli() -> None:
 )
 def encode(code: str, output: str, name: str) -> None:
     """Encode provided TEXT into a QR and save it as an image file."""
-    logger.info("Processing %s", code)
-    logger.info(
-        "Instantiating QR code with version:%s error_correction:%s box_size:%s border:%s",
-        VERSION,
-        ERROR_CORRECTION,
-        BOX_SIZE,
-        BORDER_SIZE,
-    )
-    qr = qrcode.QRCode(
-        version=VERSION,
-        error_correction=ERROR_CORRECTION,
-        box_size=BOX_SIZE,
-        border=BORDER_SIZE,
-    )
+    try:
+        qr = QR(code)
+    except InvalidCodeError as e:
+        logger.error(str(e))
+        raise SystemExit(1) from None
 
-    logger.info("Adding data to QR")
-    qr.add_data(code)
-    qr.make(fit=True)
-
-    logger.info("Generating QR code with fill: %s and back:%s", FILL_COLOR, BACK_COLOR)
-    img = qr.make_image(fill_color=FILL_COLOR, back_color=BACK_COLOR)
-
+    img = qr.encode()
     filename = name if name else code
     output_file = f"{output}/{filename}.png"
-    logger.info("Saving QR code to %s", output_file)
     img.save(output_file)
     logger.info("QR code generated and saved to %s", output_file)
 
@@ -72,12 +46,13 @@ def encode(code: str, output: str, name: str) -> None:
 @click.argument("qrfile", type=click.Path(exists=True))
 def read(qrfile: str) -> None:
     """Read QR code from the provided image file."""
-    # Load the QR code image
-    qr_image = Image.open(qrfile)
-    decoded_objects = decode(qr_image)
+    try:
+        qr = QR.from_file(qrfile)
+    except InvalidCodeError as e:
+        logger.error(str(e))
+        raise SystemExit(1) from None
 
-    for obj in decoded_objects:
-        logger.info("Type: %s, Data: %s", obj.type, obj.data.decode("utf-8"))
+    logger.info("Type: QRCODE, Data: %s", qr.code)
 
 
 if __name__ == "__main__":
